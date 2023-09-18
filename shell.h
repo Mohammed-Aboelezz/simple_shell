@@ -22,6 +22,19 @@
 #define min(x, y) (((x) < (y)) ? (x) : (y))
 
 /**
+ * struct liststr - linked list
+ * @num: the field number
+ * @str : string
+ *@next : pionter to the next node 
+ */
+typedef struct list
+{
+	int num;
+	char *str;
+	struct list *next;
+} list_t;
+
+/**
  *struct map - a struct that maps a command name to a function 
  *
  *@command_name: name of the command
@@ -32,6 +45,21 @@ typedef struct map
 {
 	char *command_name;
 	void (*func)(char **command);
+	char *arg;
+	char **argv;
+	char *path;
+	int argc;
+	unsigned int line_count;
+	int error_num;
+	int line_flag;
+	char *fname;
+	list_t *env;
+	list_t *history;
+	list_t *alias;
+	int env_changed;
+	int status;
+	char **cmd_buffer;
+	int buffer_type;
 } function_map;
 
 extern char **environ;
@@ -40,6 +68,7 @@ extern char **commands;
 extern char *shell_name;
 extern int status;
 
+
 /*helpers*/
 void print(char *, int);
 char **tokenizer(char *, char *);
@@ -47,19 +76,29 @@ void remove_newline(char *);
 int _strlen(char *);
 void _strcpy(char *, char *);
 
-/*helpers2*/
+/*helpers1*/
 int _strcmp(char *, char *);
 char *_strcat(char *, char *);
 int _strspn(char *, char *);
 int _strcspn(char *, char *);
 char *_strchr(char *, char);
 
-/*helpers3*/
+/*helpers2*/
 char *_strtok_r(char *, char *, char **);
 int _atoi(char *);
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
 void ctrl_c_handler(int);
 void remove_comment(char *);
+
+/*helper3*/
+char **strtow(char *, char *);
+void mfree(char **);
+
+/*helper4*/
+char *_memset(char *, char, unsigned int);
+int is_delim(char, char *);
+int _isalpha(int);
+int _erratoi(char *);
 
 /*utils*/
 int parse_command(char *);
@@ -70,8 +109,12 @@ char *_getenv(char *);
 
 /*built_in*/
 void env(char **);
+
 void quit(char **);
 
+/*built_in1*/
+int _unsetenv(function_map *, char *);
+int _setenv(function_map *, char *, char *);
 /*main*/
 extern void non_interactive(void);
 extern void initializer(char **current_command, int type_command);
